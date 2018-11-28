@@ -1,0 +1,16 @@
+## Hub Postgres Filebeat Configuration
+
+filebeat.prospectors:
+- input_type: log
+  paths:
+    - /var/lib/postgresql/data/pg_log/*
+  fields:
+    application: "hub-postgresql"
+    category: "postgres-log"
+  fields_under_root: true
+  
+output.logstash:
+  hosts: ["${HUB_LOGSTASH_HOST:logstash}:${HUB_LOGSTASH_PORT:5044}"]
+  index: filebeat
+
+logging.level: info
