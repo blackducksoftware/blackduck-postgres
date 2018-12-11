@@ -87,6 +87,26 @@ else
   exit $exitCode
 fi
 
+# Apply postgres configuration changes that require a database restart to take affect.
+# The initialization scripts take care of this the very first time the container is
+# brought up. Otherwise, we need to start postgres, apply the changes, and stop postgres
+# again.
+configSettingsFile=/config-settings.pgsql
+if [ -d "$PGDATA" ] && [ -s "$PGDATA/PG_VERSION" ] && [ -s ${configSettingsFile} ] ; then
+	# internal start of server in order to allow set-up using psql-client
+	# does not listen on external TCP/IP and waits until start finishes
+	PGUSER="${PGUSER:-postgres}" \
+	pg_ctl -D "$PGDATA" \
+		-o "-c listen_addresses=''" \
+		-w start
+
+	echo "Applying configuration settings"
+	psql -v ON_ERROR_STOP=1 -f ${configSettingsFile} postgres
+
+	PGUSER="${PGUSER:-postgres}" \
+	pg_ctl -D "$PGDATA" -m fast -w stop
+fi
+
 set -e
 
 # Start Filebeat first
