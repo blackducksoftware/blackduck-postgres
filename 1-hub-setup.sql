@@ -23,6 +23,8 @@ ALTER SYSTEM SET effective_cache_size TO '256MB';
 ALTER SYSTEM SET default_statistics_target TO '100';
 ALTER SYSTEM SET constraint_exclusion TO 'partition';
 ALTER SYSTEM SET autovacuum TO 'on';
+ALTER SYSTEM SET autovacuum_max_workers TO '20';
+ALTER SYSTEM SET autovacuum_vacuum_cost_limit TO '2000';
 ALTER SYSTEM SET autovacuum_vacuum_cost_delay TO '10ms';
 ALTER SYSTEM SET max_locks_per_transaction TO '256';
 ALTER SYSTEM SET escape_string_warning TO 'off';

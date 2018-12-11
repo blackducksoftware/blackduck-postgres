@@ -28,7 +28,7 @@ ENV POSTGRES_USER="postgres" \
 
 RUN mkdir -p /opt/blackduck/hub/hub-database/bin 
 
-COPY hub-database.sh /hub-database.sh
+COPY hub-database.sh config-settings.pgsql /
 COPY 1-hub-setup.sql 2-hub-setup.sh docker-entrypoint-initdb.d/
 COPY --from=docker-common certificate-manager.sh /opt/blackduck/hub/hub-database/bin/certmanager.sh
 COPY docker-healthcheck.sh /usr/local/bin/docker-healthcheck.sh
