@@ -5,5 +5,5 @@ Black Duck implementation of postgresql image for use with Black Duck applicatio
 
 Black Duck requires multiple databases within Postgres, which are created in one of two ways:
 
-- The main application database, `bds_hub`, is created via the `POSTGRES_DB` environment variable and behavior defined in the base postgres container
+- The main application database, `bds_hub`, is created via the `POSTGRES_DB` environment variable and behavior defined in the base postgres container (specified within the `Dockerfile`)
 - Additional databases are setup via SQL scripts such as `1-hub-setup.sql` and similar
