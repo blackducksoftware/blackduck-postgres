@@ -15,3 +15,5 @@ gradle-app.setting
 
 # vim working files
 .*.swp
+/.project
+/.settings/
