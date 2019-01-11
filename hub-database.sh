@@ -53,10 +53,10 @@ dataPopulated=false
 
 if [ -d "$PGDATA" ] && [ -s "$PGDATA/PG_VERSION" ];
 then
-	echo "Data directory not populated"
+	echo "Data directory populated"
 	dataPopulated=true
 else
-	echo "Data directory populated"
+	echo "Data directory not populated"
 fi
 
 ## Server Certificate management
