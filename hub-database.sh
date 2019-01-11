@@ -31,7 +31,7 @@ echo "Database host: $targetDatabaseHost"
 ## Until we need another requirement from customers that they need to make a change on pg_hba.conf
 ## trigger this each time when starting a container.
 ## (needs to be kept in sync with 2-hub-setup.sh)
-if [ -d "$PGDATA" ] && [ -s "$PGDATA/$PG_VERSION" ];
+if [ -d "$PGDATA" ] && [ -s "$PGDATA/PG_VERSION" ];
 then
 echo "Updating pg_hba.conf"
 cat <<- EOF > $PGDATA/pg_hba.conf
@@ -51,7 +51,7 @@ fi
 
 dataPopulated=false
 
-if [ -d "$PGDATA" ] && [ -s "$PGDATA/$PG_VERSION" ];
+if [ -d "$PGDATA" ] && [ -s "$PGDATA/PG_VERSION" ];
 then
 	echo "Data directory not populated"
 	dataPopulated=true
