@@ -115,7 +115,6 @@ then
   	
   	# Convert client key to usable format
     mv /tmp/blackduck_user.crt /tmp/hub-db-user.crt
-    rm -f /tmp/blackduck_user.crt
   fi
   
   if [ -f /tmp/blackduck_user.key ]
@@ -124,7 +123,6 @@ then
   	
   	# Convert client key to usable format
     mv /tmp/blackduck_user.key /tmp/hub-db-user.key
-    rm -f /tmp/blackduck_user.key
   fi
   
   if [ -f /tmp/blackduck_user.key.pkcs8 ]
@@ -133,7 +131,6 @@ then
   	
   	# Convert client key to usable format
   	mv /tmp/blackduck_user.key.pkcs8 /tmp/hub-db-user.key.pkcs8
-    rm -f /tmp/blackduck_user.key.pkcs8
     
     openssl rsa -in /tmp/hub-db-user.key.pkcs8 -inform DER -modulus -out /tmp/hub-db-user-rsa.key
   fi
