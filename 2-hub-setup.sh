@@ -49,15 +49,36 @@ EOF
 
 if [ -f /tmp/root.crt ];
 then 
+  echo "Populating root certificate"
   mv /tmp/root.crt $PGDATA/root.crt
 fi
 
 if [ -f /tmp/hub-database.key ];
 then 
+  echo "Populating server key"
   mv /tmp/hub-database.key $PGDATA/hub-database.key
 fi
 
 if [ -f /tmp/hub-database.crt ];
 then
+  echo "Populating server certificate"
   mv /tmp/hub-database.crt $PGDATA/hub-database.crt 
+fi
+
+if [ -f /tmp/hub-db-user.key ];
+then
+  echo "Populating client key"
+  mv /tmp/hub-db-user.key $PGDATA/hub-db-user.key
+fi
+
+if [ -f /tmp/hub-db-user-rsa.key ];
+then
+  echo "Populating client RSA key"
+  mv /tmp/hub-db-user-rsa.key $PGDATA/hub-db-user-rsa.key
+fi
+
+if [ -f /tmp/hub-db-user.crt ];
+then
+  echo "Populating client certificate"
+  mv /tmp/hub-db-user.crt $PGDATA/hub-db-user.crt
 fi
