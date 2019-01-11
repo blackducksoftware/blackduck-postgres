@@ -1,5 +1,16 @@
 # blackduck-postgres
+
 Black Duck implementation of postgresql image for use with Black Duck application.
+
+## Building
+
+The docker container for this project can be built with the command
+
+```
+docker build --pull -t blackducksoftware/blackduck-postgres:${version} .
+```
+
+replacing `${version}` with the version you'd like to build locally
 
 ## Database Creation
 
