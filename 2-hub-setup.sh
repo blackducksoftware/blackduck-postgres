@@ -1,4 +1,4 @@
-#!/bin/sh -x
+#!/bin/sh
 set -e
 
 ###
@@ -11,7 +11,7 @@ set -e
 # users will connect to bds_hub_report as blackduck_reporter(read-only)
 psql -c 'CREATE DATABASE bds_hub_report OWNER postgres ENCODING SQL_ASCII;'
 psql -c 'CREATE USER blackduck_reporter;'
-psql -b -e -U "$POSTGRES_USER" -d bds_hub_report << EOF
+psql -U "$POSTGRES_USER" -d bds_hub_report << EOF
 GRANT SELECT, INSERT, UPDATE, TRUNCATE, DELETE, REFERENCES ON ALL TABLES IN SCHEMA public TO blackduck_user;
 GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public to blackduck_user;
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, TRUNCATE, DELETE, REFERENCES ON TABLES TO blackduck_user;
