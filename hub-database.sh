@@ -180,6 +180,13 @@ fi
 # again.
 configSettingsFile=/config-settings.pgsql
 if $dataPopulated && [ -s ${configSettingsFile} ] ; then
+	# Set the correct permissions on $PGDATA.  It seems that in some unidentified
+	# circumstances, the PG container starts with $PGDATA world-readable, which causes
+	# postgres to abort startup.  The container succeeds in starting up because
+	# docker-entrypoint.sh sets the appropriate permissions on every startup, so let's
+	# do that too.
+	chmod 700 "$PGDATA" 2>/dev/null || :
+
 	# internal start of server in order to allow set-up using psql-client
 	# does not listen on external TCP/IP and waits until start finishes
 	PGUSER="${PGUSER:-postgres}" \
