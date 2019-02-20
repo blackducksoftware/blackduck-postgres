@@ -1,5 +1,5 @@
 FROM blackducksoftware/hub-docker-common:1.0.3 as docker-common
-FROM postgres:9.6.10-alpine
+FROM postgres:9.6.12-alpine
 
 ARG VERSION
 ARG LASTCOMMIT
