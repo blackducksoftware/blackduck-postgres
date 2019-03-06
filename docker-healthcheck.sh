@@ -1,13 +1,21 @@
 #!/bin/sh
 
 # Using Unix socket connection to test readiness.
-queryResult="$(psql --username=blackduck --dbname=bds_hub --port=5432 --tuples-only --no-align --quiet -c 'SELECT 1')"
-if [ "$queryResult" == "1" ];
+pg_isready --username=blackduck --dbname=bds_hub --port=5432 --quiet
+queryResult=$?
+
+if [ "$queryResult" == "0" ];
 then
-  # Successful PostgreSQL Unix socket connection and query result.
+  # PostgreSQL is accepting connections.
   exit 0
 fi
 
-# Unsuccessful PostgreSQL Unix socket connection or query result.
+if [ "$queryResult" == "1" ];
+then
+  # PostgreSQL is still starting up.
+  exit 0
+fi
+
+# PostgreSQL is not responding.
 exit 1
 
