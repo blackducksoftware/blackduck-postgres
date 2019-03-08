@@ -2,18 +2,6 @@
 
 hubDatabaseDir=/opt/blackduck/hub/hub-database
 
-# Print out preconditions : Especially important for various selinux / openshift scenarios.
-function preconditions {
-  echo "Debug info: Attempting to start database in $hubDatabaseDir."
-  echo "Debug info: Contents of database directory: `ls -altrh $hubDatabaseDir`."
-  echo "Debug info: Running as `whoami` : detailed info = `id`".
-  echo "Debug info: Pgdata contents: `ls -altrh $PGDATA`."
-  echo "Debug info: My user ID is `whoami | id -u`."
-  echo "Debug info: The postgres user ID is `id -u postgres`."
-}
-
-preconditions
-
 if [ ! -f "$hubDatabaseDir/bin/certmanager.sh" ];
 then
   echo "ERROR: Cert manager shell script is not present."
@@ -82,13 +70,13 @@ then
     then
       # PGDATA directory exists and PG_VERSION exists and is greater than 0 bytes.
       # Copy files.  Otherwise, let initialization scripts handle copying.
-      echo "Copying root certificate to $PGDATA/root.crt"
+      echo "Copying root certificate"
       mv /tmp/root.crt $PGDATA/root.crt
 
-      echo "Copying database server private key to $PGDATA/hub-database.key"
+      echo "Copying database server private key"
       mv /tmp/hub-database.key $PGDATA/hub-database.key
 
-      echo "Copying database server certificate to $PGDATA/hub-database.crt"
+      echo "Copying database server certificate"
       mv /tmp/hub-database.crt $PGDATA/hub-database.crt
     else
       echo "Data directory not yet populated - deferring to initialization script to setup server certificates"
@@ -154,13 +142,13 @@ then
     then
       # PGDATA directory exists and PG_VERSION exists and is greater than 0 bytes.
       # Copy files.  Otherwise, let initialization scripts handle copying.
-      echo "Copying database client private key to $PGDATA/hub-db-user.key"
+      echo "Copying database client private key"
       mv /tmp/hub-db-user.key $PGDATA/hub-db-user.key
       
       echo "Copying database client private RSA key to $PGDATA/hub-db-user-rsa.key"
       mv /tmp/hub-db-user-rsa.key $PGDATA/hub-db-user-rsa.key
 
-      echo "Copying database client certificate to $PGDATA/hub-db-user.crt"
+      echo "Copying database client certificate"
       mv /tmp/hub-db-user.crt $PGDATA/hub-db-user.crt
     else
       echo "Data directory not yet populated - deferring to initialization script to setup client certificates"

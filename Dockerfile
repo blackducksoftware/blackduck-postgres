@@ -1,4 +1,4 @@
-FROM blackducksoftware/hub-docker-common:1.0.3 as docker-common
+FROM blackducksoftware/hub-docker-common:1.0.4 as docker-common
 FROM postgres:9.6.12-alpine
 
 ARG VERSION
