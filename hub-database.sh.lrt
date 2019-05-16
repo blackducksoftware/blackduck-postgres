@@ -1,0 +1,61 @@
+#!/bin/bash
+
+hubDatabaseDir=/opt/blackduck/hub/hub-database
+
+targetDatabaseHost="${HUB_POSTGRES_HOST:-postgres}"
+
+echo "Database host: $targetDatabaseHost"
+
+## Until we need another requirement from customers that they need to make a change on pg_hba.conf
+## trigger this each time when starting a container.
+## (needs to be kept in sync with 2-hub-setup.sh)
+if [ -d "$PGDATA" ] && [ -s "$PGDATA/PG_VERSION" ];
+then
+echo "Updating pg_hba.conf"
+cat <<- EOF > $PGDATA/pg_hba.conf
+# TYPE    DATABASE          USER                  ADDRESS                 METHOD
+local     all             	all                   						  trust
+host      all             	all                   0.0.0.0/0               md5
+EOF
+fi
+
+dataPopulated=false
+
+if [ -d "$PGDATA" ] && [ -s "$PGDATA/PG_VERSION" ];
+then
+	echo "Data directory populated"
+	dataPopulated=true
+else
+	echo "Data directory not populated"
+fi
+
+# Apply postgres configuration changes that require a database restart to take affect.
+# The initialization scripts take care of this the very first time the container is
+# brought up. Otherwise, we need to start postgres, apply the changes, and stop postgres
+# again.
+configSettingsFile=/config-settings.pgsql
+if $dataPopulated && [ -s ${configSettingsFile} ] ; then
+	# Set the correct permissions on $PGDATA.  It seems that in some unidentified
+	# circumstances, the PG container starts with $PGDATA world-readable, which causes
+	# postgres to abort startup.  The container succeeds in starting up because
+	# docker-entrypoint.sh sets the appropriate permissions on every startup, so let's
+	# do that too.
+	chmod 700 "$PGDATA" 2>/dev/null || :
+
+	# internal start of server in order to allow set-up using psql-client
+	# does not listen on external TCP/IP and waits until start finishes
+	PGUSER="${PGUSER:-postgres}" \
+	pg_ctl -D "$PGDATA" \
+		-o "-c listen_addresses=''" \
+		-w start
+
+	echo "Applying configuration settings"
+	psql -v ON_ERROR_STOP=1 -f ${configSettingsFile} postgres
+
+	PGUSER="${PGUSER:-postgres}" \
+	pg_ctl -D "$PGDATA" -m fast -w stop
+fi
+
+echo "Attempting to start Hub database."
+
+exec /docker-entrypoint.sh "$@"

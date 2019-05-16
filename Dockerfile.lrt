@@ -1,0 +1,34 @@
+ARG LRT_BASE_IMAGE=""
+
+FROM ${LRT_BASE_IMAGE}
+
+ARG VERSION
+ARG LASTCOMMIT
+ARG BUILDTIME
+ARG BUILD
+
+LABEL com.blackducksoftware.hub.vendor="Black Duck Software, Inc." \
+      com.blackducksoftware.hub.version="$VERSION" \
+      com.blackducksoftware.hub.lastCommit="$LASTCOMMIT" \
+      com.blackducksoftware.hub.buildTime="$BUILDTIME" \
+      com.blackducksoftware.hub.build="$BUILD" \
+      com.blackducksoftware.hub.image="postgres"
+
+ENV BLACKDUCK_RELEASE_INFO "com.blackducksoftware.hub.vendor=Black Duck Software, Inc. \
+com.blackducksoftware.hub.version=$VERSION \
+com.blackducksoftware.hub.lastCommit=$LASTCOMMIT \
+com.blackducksoftware.hub.buildTime=$BUILDTIME \
+com.blackducksoftware.hub.build=$BUILD"
+
+RUN echo -e "$BLACKDUCK_RELEASE_INFO" > /etc/blackduckrelease
+
+COPY hub-database.sh.lrt /hub-database.sh
+
+RUN chmod 755 /hub-database.sh \
+	&& sed -i 's/ALTER SYSTEM SET ssl/--ALTER SYSTEM SET ssl/' docker-entrypoint-initdb.d/1-hub-setup.sql \
+	&& echo "ALTER USER blackduck_user PASSWORD 'mallard';" >> docker-entrypoint-initdb.d/1-hub-setup.sql \
+	&& echo "ALTER USER blackduck PASSWORD 'mallard';" >> docker-entrypoint-initdb.d/1-hub-setup.sql \
+	&& sed -i -e '/hostssl/d' -e 's/reject/md5/' -e 's/hostnossl/host/' docker-entrypoint-initdb.d/2-hub-setup.sh
+
+ENTRYPOINT [ "/hub-database.sh" ] 
+CMD [ "postgres" ]
